@@ -1,5 +1,5 @@
 /***********************************************************************
-    HttpGETrequest class handles get request. To Be removed
+    HttpGETrequest class handles get request.
 ************************************************************************/
 public with sharing class HttpGETrequest implements HttpRequestHandlerInterface {
          

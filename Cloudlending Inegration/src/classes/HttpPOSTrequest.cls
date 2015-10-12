@@ -1,52 +1,84 @@
 /************************************************
     HttpPOSTrequest class handles post request.
 *************************************************/
-public with sharing class HttpPOSTrequest implements CLHttpRequest{
+Global with sharing class HttpPOSTrequest implements HttpRequestHandlerInterface{
 
-    public HttpResponse sendRequest(requestObject request)
+    Global HttpResponse sendRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
     {
-        Http http = new Http();
-        HttpRequest req = new HttpRequest();
-        // can be hardcoded setMethod('POST');
-        req.setMethod(request.method);
-        if(request.timeout !=0) req.setTimeout(request.timeout);
-        req.setBody(request.body);
-        req.setEndpoint(request.endpoint);
+    	retryCount ++;
+    	do{ system.debug('retryCount-->'+retryCount);
+    		Http http = new Http();
+	        HttpRequest req = new HttpRequest();       
+	        req.setMethod(request.method);
+	        if(timeout !=0) req.setTimeout(timeout);        
+	        req.setBody(request.body);
+	        req.setEndpoint(endpoint);
+	        
+	        if(request.headerMap != Null)
+	        {
+	            for(String key : request.headerMap.keyset())
+	            {
+	                req.setHeader(key,request.headerMap.get(key));              
+	            }                       
+	        }
+	        
+	        HttpResponse res;
+	        
+	        try{
+	        	res = http.send(req);
+	        }catch(Exception e)
+	        {
+	        	  retryCount--;      	
+	        }
+    		
+    		if(res != Null)
+	        {
+	        	retryCount = 0;
+	        	return res;        	
+	        }
+	        
+    	}while(retryCount >0);                
         
-        if(!request.headerMap.isEmpty())
-        {
-            for(String key : request.headerMap.keyset())
-            {
-                req.setHeader(key,request.headerMap.get(key));              
-            }                       
-        }
-        
-        HttpResponse res = http.send(req);
-        
-        return res; 
+        return Null; 
     }
 
-    public HttpResponse sendRawRequest(requestObject request)
+    Global HttpResponse sendRawRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
     {       
-        Http http = new Http();
-        HttpRequest req = new HttpRequest();
-        // can hardcode setMethod('POST');
-        req.setMethod(request.method);
-        if(request.timeout !=0) req.setTimeout(request.timeout);
-        req.setBody(request.body);
-        req.setEndpoint(request.endpoint);
+       retryCount ++;
+    	do{
+    		Http http = new Http();
+	        HttpRequest req = new HttpRequest();       
+	        req.setMethod(request.method);
+	        if(timeout !=0) req.setTimeout(timeout);        
+	        req.setBody(request.body);
+	        req.setEndpoint(endpoint);
+	        
+	        if(request.headerMap != Null)
+	        {
+	            for(String key : request.headerMap.keyset())
+	            {
+	                req.setHeader(key,request.headerMap.get(key));              
+	            }                       
+	        }
+	        
+	        HttpResponse res;
+	        
+	        try{
+	        	res = http.send(req);
+	        }catch(Exception e)
+	        {
+	        	  retryCount--;      	
+	        }
+    		
+    		if(res != Null)
+	        {
+	        	retryCount = 0;
+	        	return res;        	
+	        }
+	        
+    	}while(retryCount >0);                
         
-        if(!request.headerMap.isEmpty())
-        {
-            for(String key : request.headerMap.keyset())
-            {
-                req.setHeader(key,request.headerMap.get(key));              
-            }                       
-        }
-        
-        HttpResponse res = http.send(req);
-        
-        return res;         
+        return Null;
     }
     
 }

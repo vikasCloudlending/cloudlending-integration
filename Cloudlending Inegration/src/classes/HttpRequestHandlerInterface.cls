@@ -1,4 +1,4 @@
-public interface HttpRequestHandlerInterface {
+Global interface HttpRequestHandlerInterface {
 
     HttpResponse sendRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount);
 

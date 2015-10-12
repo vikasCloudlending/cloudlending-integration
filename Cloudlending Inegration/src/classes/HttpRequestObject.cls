@@ -1,4 +1,4 @@
-public with sharing class HttpRequestObject {
+Global with sharing class HttpRequestObject {
     
     public String method;
     public String body;

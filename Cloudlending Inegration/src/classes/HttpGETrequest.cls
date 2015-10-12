@@ -1,9 +1,9 @@
 /***********************************************************************
     HttpGETrequest class handles get request.
 ************************************************************************/
-public with sharing class HttpGETrequest implements HttpRequestHandlerInterface {
+Global with sharing class HttpGETrequest implements HttpRequestHandlerInterface {
          
-    public HttpResponse sendRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
+    Global HttpResponse sendRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
     { 
 		// boolean will become true when call timeouts
 		Boolean loopOrnot = false;
@@ -45,7 +45,7 @@ public with sharing class HttpGETrequest implements HttpRequestHandlerInterface 
         return null;
     }
         
-    public HttpResponse sendRawRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
+    Global HttpResponse sendRawRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
     {        
         // boolean will become true when call timeouts
 		Boolean loopOrnot = false;

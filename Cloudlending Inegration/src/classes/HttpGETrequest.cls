@@ -4,18 +4,22 @@
 Global with sharing class HttpGETrequest implements HttpRequestHandlerInterface {
          
     Global HttpResponse sendRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
-    { 
-		// boolean will become true when call timeouts
-		Boolean loopOrnot = false;
+    { 			
 		retryCount ++;
         do
-		{	system.debug('retryCount-->'+retryCount);
+		{	
 			Http http = new Http();
             HttpRequest req = new HttpRequest();
 			
-			if(timeOut !=null || timeOut !=0) req.setTimeout(timeOut);
-			req.setEndpoint(constructEndpoint(endpoint,request.paramMap));
+			if(timeOut !=0) req.setTimeout(timeOut);
+			
+			if(request.paramMap != Null)
+				req.setEndpoint(constructEndpoint(endpoint,request.paramMap));
+			else
+				req.setEndpoint(endpoint);
+				
 			req.setMethod(request.method);
+			
 			if(request.body !=null) req.setBody(request.body);
 			
 			//Header Map to populate html headers
@@ -29,13 +33,12 @@ Global with sharing class HttpGETrequest implements HttpRequestHandlerInterface 
             try
             {                
                 res = http.send(req);
-            }catch(System.CalloutException e)
+            }catch(Exception e)
             {
-                retryCount--;                
-                loopOrnot = true;
+                retryCount--;           
             }
 			
-			 if(!loopOrnot)
+			 if(res != Null)
             {
                 retryCount =0;                  
                 return res;
@@ -47,17 +50,21 @@ Global with sharing class HttpGETrequest implements HttpRequestHandlerInterface 
         
     Global HttpResponse sendRawRequest(HttpRequestObject request,String endpoint,Integer timeout,Integer retryCount)
     {        
-        // boolean will become true when call timeouts
-		Boolean loopOrnot = false;
-		
+       retryCount ++;
         do
-		{
+		{	
 			Http http = new Http();
             HttpRequest req = new HttpRequest();
 			
-			if(timeOut !=null || timeOut !=0) req.setTimeout(timeOut);
-			req.setEndpoint(constructEndpoint(endpoint,request.paramMap));
+			if(timeOut !=0) req.setTimeout(timeOut);
+			
+			if(request.paramMap != Null)
+				req.setEndpoint(constructEndpoint(endpoint,request.paramMap));
+			else
+				req.setEndpoint(endpoint);
+				
 			req.setMethod(request.method);
+			
 			if(request.body !=null) req.setBody(request.body);
 			
 			//Header Map to populate html headers
@@ -71,20 +78,19 @@ Global with sharing class HttpGETrequest implements HttpRequestHandlerInterface 
             try
             {                
                 res = http.send(req);
-            }catch(System.CalloutException e)
+            }catch(Exception e)
             {
-                retryCount--;                
-                loopOrnot = true;
+                retryCount--;           
             }
 			
-			 if(!loopOrnot)
+			 if(res != Null)
             {
                 retryCount =0;                  
                 return res;
             }
 		}while(retryCount > 0);
 		              
-        return null;    
+        return null;
     }
     
     //method to create query sting for the get method 

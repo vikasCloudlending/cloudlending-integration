@@ -20,52 +20,53 @@
  * See the Apex Language Reference for more information about Testing and Code Coverage.
  */
 @isTest
-private class HttpGETrequestTestClass {
+private class HttpPOSTrequestTestClass {
 
-	// Test callout to pass
-    static testMethod void UnitTest1() {
+	// Test callout to pass 
+    static testMethod void myUnitTest1() {
+        
         HttpRequestObject obj = new HttpRequestObject();
 		
-		obj.method = 'GET';
-		obj.paramMap = new Map<String,String>();
-		obj.paramMap.put('tags','dog');
-		obj.paramMap.put('category','animal');
+		obj.method = 'POST';		
 		obj.headerMap = new Map<String,String>();
 		obj.headerMap.put('Accept','TEXT');
+		obj.body = 'tag=Animal';
 		
 		Test.startTest();
-		
-		Test.setMock(HttpCalloutMock.class, new HttpRequestCalloutMock());
-		HttpGETrequest getReq = new HttpGETrequest();
-		HttpResponse res1 = getReq.sendRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',2000,2);
-				
-		obj.paramMap.clear();
-		HttpResponse res2 = getReq.sendRawRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',2000,2);
-		system.debug(res2);
-		system.assertEquals(res1.getBody(),res2.getBody(),'both return matchs');		
-		Test.stopTest();
+						
+			Test.setMock(HttpCalloutMock.class, new HttpRequestCalloutMock());
+			
+			HttpPOSTrequest postReq = new HttpPOSTrequest();
+			HttpResponse res1 = postReq.sendRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',0,1);
+			System.assertEquals(res1.getStatus(),'OK','Status is OK');
+			
+			HttpResponse res2 = postReq.sendRawRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',0,1);
+			System.assertEquals(res1.getStatus(),'OK','Status is OK'); 
+			 
+		Test.stopTest();		
     }
     
     // Test callout to fail
-    @isTest
-    static void UnitTest2()
-    {
-    	HttpRequestObject obj = new HttpRequestObject();
+ 	@isTest
+ 	static void myUnitTest2()
+ 	{
+ 		HttpRequestObject obj = new HttpRequestObject();
 		
-		obj.method = 'GET';
+		obj.method = 'POST';		
+		obj.headerMap = new Map<String,String>();
+		obj.headerMap.put('Accept','TEXT');
+		obj.body = 'tag=Animal';
 		HttpResponse nullRes = null;
-				
-		Test.startTest();
-			
-			HttpGETrequest getReq = new HttpGETrequest();
-			HttpResponse res1 = getReq.sendRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',1,2);
-			
+		
+		Test.startTest(); 	
+		
+			HttpPOSTrequest postReq = new HttpPOSTrequest();
+			HttpResponse res1 = postReq.sendRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',1,5);	
 			System.assertEquals(res1,nullRes,'return is null');
 			
-			HttpResponse res2 = getReq.sendRawRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',1,2);
-			
+			HttpResponse res2 = postReq.sendRawRequest(obj,'https://api.flickr.com/services/feeds/photos_public.gne',1,1);
 			System.assertEquals(res2,nullRes,'return is null');
-			
+		
 		Test.stopTest();
-    }
+ 	}    
 }
